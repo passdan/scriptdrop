@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+use strict;
+use Bio::SeqIO;
+
+my $usage = "\nperl ./fasta_rename_headers *infile.fasta* *ID_list.txt*\nID_list.txt is line delimited list of the format:\nID\tName\n001\tverminephrobacter\n002\tdrosphila actin\n====\n";
+
+# open text file
+my $fasta = $ARGV[0] or die $usage;
+my $IDfile = $ARGV[1] or die $usage;
+
+open FASTA, $fasta;
+open IDs, $IDfile;
+
+
+my @id_list = (<IDs>);
+
+my $fa = Bio::SeqIO->new(-file => $fasta, -format => "fasta");
+my $outseq = Bio::SeqIO->new(-file => ">$fasta.mod", -format => "fasta");
+
+while(my $seq = $fa->next_seq) {
+	# remove line endings and split on tab
+	foreach (@id_list){
+		chomp;
+		my @line = split("\t", $_);
+
+ 		if ($seq->display_id eq $line[0]){
+      			my $id = $line[1];
+			# modified sequence object
+			my $newseq = Bio::Seq->new(-id => $id, -seq => $seq->seq);
+			# write modified sequence to file
+			$outseq->write_seq($newseq);
+		}
+	}
+}
+close IN;

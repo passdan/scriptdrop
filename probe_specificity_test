@@ -1,0 +1,94 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+#####################################
+##Dan Pass | 18/01/13              ##
+##daniel.antony.pass@googlemail.com##
+#####################################
+
+use Bio::Seq;
+use Bio::SeqIO;
+use Bio::Tools::IUPAC;
+
+my $usage = "USAGE:\t./probe_specificity_test REFERENCE_FILE.fasta probe_seq OUTFILE.txt\n";
+
+my $infile = $ARGV[0] or die $usage . "\n";
+my $probe = $ARGV[1] or die $usage . "\n";
+my $outfile = $ARGV[2] or die $usage . "\n";
+my $iupac;
+
+
+my $in = Bio::SeqIO->new(-file => "$infile", -format => 'fasta');
+$outfile =~ s/\..*//;
+my $outseq = Bio::SeqIO->new(-file => ">$outfile" . "_species-match.fasta", -format => "fasta", -width=>10000);
+open SPOUTFILE, ">$outfile" . "_probe-match.txt";
+
+select SPOUTFILE;
+
+#####
+##Generate probe matching regex 
+#####
+my $ambiseq = Bio::Seq->new(-seq => "$probe", -alphabet => 'dna');
+
+# Create all possible non-degenerate sequences
+$iupac = Bio::Tools::IUPAC->new(-seq => $ambiseq);
+my $regexp = $iupac->regexp($ambiseq);
+
+my $regexp_gapped;
+my $f1 = 0;
+foreach my $base (split //,$regexp){
+	if ($base eq "["){
+		$f1 = 1;	
+	}
+	if($base eq "]"){
+		$f1 = 0;
+	}
+	if ($f1 == 0){
+		$regexp_gapped .= "$base-*";
+	}
+	if ($f1 == 1){
+		$regexp_gapped .= "$base";
+	}
+}
+#print "$regexp_gapped\n";
+
+
+
+print "Probe:\t$probe\n";
+print "Probe Matching regexp: $regexp\n";
+print "================================\n";
+print "Species\tmatch_start\tmatch_end\tremaining_length\tProbe_match\n";
+
+
+
+####
+##Matching sequences
+####
+
+my $match_count = 0;
+
+while (my $seq = $in->next_seq()){
+
+	if ( $seq->seq =~ m/^(.*)($regexp_gapped)(.*)/i ){
+		$match_count++;
+
+		my $match_start = length($1);
+		my $match = $2;
+		my $match_end = $match_start + length($match);
+		my $tail = length($3);
+
+		my $new_id = $seq->display_id; 
+
+		select SPOUTFILE;
+
+		print $new_id . "\t" . $match_start . "\t" . $match_end .  "\t-" . $tail ."\t" . $match . "\n";
+
+		my $newseq = Bio::Seq->new(-id => $new_id, -seq => $seq->seq);
+		$outseq->write_seq($newseq);
+	}
+}
+
+
+select STDOUT;
+print "Number of sequences matching probe: $match_count\n";

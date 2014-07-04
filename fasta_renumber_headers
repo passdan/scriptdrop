@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+chomp($file = $ARGV[0]);
+
+@a = split('_', $file);
+
+$tag = $a[0];
+
+$count =1;
+open OUTFILE, ">$tag".".fas";
+select OUTFILE;
+while (<>){
+        if (s/^>(.*)/>\1\_$count/){
+        $count++;
+        }
+        print;
+}
+close OUTFILE;
