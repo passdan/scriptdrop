@@ -1,0 +1,1 @@
+for i in `seq 1 300` ; do cut -f $i column_file.txt >tmp.txt; awk '{ sum += $1 } END { print sum }' tmp.txt ; done
