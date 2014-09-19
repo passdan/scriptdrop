@@ -33,6 +33,9 @@ stressplot(x.mds0, x.dis)
 #Make MDS
 x.mds <- metaMDS(x_matrix, trace = FALSE)
 
+###############################################
+#####           OLD NMDS PLOTTING       #######
+###############################################
 plot(x.mds, type = "p")		##t = labeled, p = points
 fac1<-x.env$OriginDest			## choose factor for grouping
 fac2<-x.env$LineA
@@ -41,8 +44,9 @@ ordiellipse(x.mds,group=fac1, label=TRUE, lwd=5)
 
 ef <- envfit(x.mds ~ Al_soil + P_soil + S_soil + Ca_soil + Ti_soil + V_soil + Cr_soil + Mn_soil + Fe_soil + Co_soil + Ni_soil + Cu_soil + Zn_soil + As_soil + Se_soil + Mo_soil + Cd_soil + Sb_soil + Ba_soil + Hg_soil + Pb_soil + pH_soil + moi_soil + OC_soil, na.rm = TRUE, x.env)
 plot(ef)
+
 ###############################################
-#####             ggplot             ##########
+#####    Fancy ggplot NMDS plotting    ########
 ###############################################
 
 #Extract NMDS coordinates
