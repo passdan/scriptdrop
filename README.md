@@ -1,4 +1,4 @@
 scriptdrop
 ==========
 
-shared scripts. do whatever you want with it but dont blame me if it does something you dont like.
+Shared scripts. Do whatever you want with them but dont blame me if it does something you dont like. Thery're free don't ya know?
