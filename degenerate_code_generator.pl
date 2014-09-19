@@ -2,6 +2,10 @@
 use strict;
 use warnings;
 
+#####################################
+##daniel.antony.pass@googlemail.com##
+#####################################
+
 use Bio::Seq;
 use Bio::AlignIO;
 use Bio::Tools::IUPAC;
