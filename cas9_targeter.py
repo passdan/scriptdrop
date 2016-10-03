@@ -11,7 +11,7 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 import re
 
 description = """---------------
-This cas9_targeter script takes a region or genome, deconstructs it and tests for paired target regions that satisfy the guidelines below. This is then passed to BLASTn to test for simple alignment against the reference dataset which could be the rest of this species' genome, or multiple cross-reactive species. Final checks should be perforemd using additional online tools for certainty. The tool was designed specifically for targetting species not catered for with online tools.
+This cas9_targeter.py script takes a region or genome, deconstructs it and tests for paired target regions that satisfy the guidelines below. This is then passed to BLASTn to test for simple alignment against the reference dataset which could be the rest of this species' genome, or multiple cross-reactive species. Final checks should be perforemd using additional online tools for certainty. The tool was designed specifically for targetting species not catered for with online tools.
 
 Reqired input is a fasta formatted file of the region you want to find targets within. Can be multiple fasta lines in one file (multiple regions).
 Outputs are a fasta table of the generated probes, and a table.txt file of the same information in a graphical representation.
